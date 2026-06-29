@@ -9,7 +9,8 @@ A SystemVerilog implementation and verification of an 8×8 MAC-based systolic ar
 ## Repository Structure
 
 ```
-├── rtl/    .
+.
+├── rtl/    
 |    ├── cdv/                        # Coverage-Driven Verification (no assertions)
 |    │   ├── integer8Bit/          # 8-bit unsigned integer MAC
 |    │   │   ├── pe.sv
