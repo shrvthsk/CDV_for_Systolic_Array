@@ -29,15 +29,11 @@ module pe #(
     end
 
     // Signed Q8.8 x Q8.8 Multiplication
-    // FIX: sign-extend both operands to ACC_WIDTH BEFORE multiplying.
-    // Without this, $signed(16-bit) * $signed(16-bit) gives a 16-bit
-    // truncated result — the upper 16 bits of the true product are lost.
     logic signed [ACC_WIDTH-1:0] intermediate_product;
     assign intermediate_product = ACC_WIDTH'($signed(west_in))
                                  * ACC_WIDTH'($signed(north_in));
 
     // Q16.16 to Q24.8 Realignment using ARITHMETIC right shift (>>>)
-    // >>> preserves the sign bit; >> (logical) would corrupt negative results.
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             accum_reg <= '0;
