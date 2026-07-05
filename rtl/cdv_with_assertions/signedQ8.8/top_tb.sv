@@ -1,5 +1,10 @@
 `timescale 1ns/1ps
 
+//==================================
+//CDV with Assertions
+//Signed Q8.8 top_tb.sv
+//==================================
+
 module top_tb;
     import tb_pkg::*;
 
@@ -14,7 +19,6 @@ module top_tb;
 
     always #10 clk = ~clk;
 
-    // Unit Under Test Instantiation
     systolic_array #(
         .DATA_WIDTH(DATA_WIDTH),
         .ACC_WIDTH(ACC_WIDTH),
@@ -32,7 +36,6 @@ module top_tb;
     matrix_transaction tx;
     systolic_coverage   cov;
 
-    // Signed accumulator - declared signed so negative results compare correctly
     logic signed [ACC_WIDTH-1:0] scoreboard_matrix [0:ARRAY_SIZE-1][0:ARRAY_SIZE-1];
 
     logic [DATA_WIDTH-1:0] west_delayed  [0:ARRAY_SIZE-1][0:ARRAY_SIZE-1];
@@ -47,7 +50,6 @@ module top_tb;
     int mismatch_count = 0;
     real final_coverage_score = 0.0;
 
-    // Pipeline fill tracker
     always @(posedge clk) begin
         if (!rst) begin
             total_cycles++;
@@ -59,7 +61,6 @@ module top_tb;
         end
     end
 
-    // Signed Spatial Data Wavefront Emulation Engine
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             for (int r = 0; r < ARRAY_SIZE; r++) begin
@@ -100,7 +101,6 @@ module top_tb;
         end
     end
 
-    // ── Task: apply one directed stimulus cycle and sample coverage ──
     task apply_directed(
         input logic [DATA_WIDTH-1:0] w_val,
         input logic [DATA_WIDTH-1:0] n_val,
@@ -122,8 +122,6 @@ module top_tb;
     endtask
 
     // =========================================================================
-    // TESTBENCH CONCURRENT ASSERTION
-    // =========================================================================
     // TB-A1: Scoreboard must never carry X/Z values after reset.
     // =========================================================================
     genvar sr, sc;
@@ -138,9 +136,6 @@ module top_tb;
         end
     endgenerate
 
-    // =========================================================================
-    // MAIN STIMULUS + IMMEDIATE ASSERTION CHECKER
-    // =========================================================================
     initial begin
         clk     = 0;
         rst     = 1;
@@ -171,11 +166,6 @@ module top_tb;
             end
         end
         $display("[SYSTEM_START] Reset released. Post-reset assertion passed. Running directed corner-case stimulus...");
-
-        // ── Phase 1: Directed corner-case stimulus ─────────────────────────────
-        // XSim's constraint solver does not reliably generate exact single values
-        // (0x0000, 0x7FFF, 0x8000) from dist constraints on packed arrays.
-        // Force these explicitly to guarantee every lane hits all coverage bins.
 
         // zero × zero
         apply_directed(16'h0000, 16'h0000, 1'b1);
@@ -211,7 +201,6 @@ module top_tb;
         @(posedge clk); // let directed phase settle
         $display("[DIRECTED] Corner-case stimulus complete. Starting random phase...");
 
-        // ── Phase 2: Constrained-random transactions ────────────────────────────
         for (int transaction_idx = 0; transaction_idx < 2000; transaction_idx++) begin
 
             // =================================================================

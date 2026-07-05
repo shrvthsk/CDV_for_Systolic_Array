@@ -1,5 +1,10 @@
 `timescale 1ns/1ps
 
+//==================================
+//CDV with Assertions
+//Unsigned Q8.8 systolic_array.sv
+//==================================
+
 module systolic_array #(
     parameter int DATA_WIDTH = 16,
     parameter int ACC_WIDTH  = 32,
@@ -17,7 +22,6 @@ module systolic_array #(
     wire [DATA_WIDTH-1:0] horiz_wires [0:ARRAY_SIZE-1][0:ARRAY_SIZE];
     wire [DATA_WIDTH-1:0] vert_wires  [0:ARRAY_SIZE][0:ARRAY_SIZE-1];
 
-    // Assign external spatial vector arrays to initial boundary routes
     genvar i;
     generate
         for (i = 0; i < ARRAY_SIZE; i++) begin : boundary_binding
@@ -26,7 +30,6 @@ module systolic_array #(
         end
     endgenerate
 
-    // Interconnect Node Generation Matrix
     genvar row, col;
     generate
         for (row = 0; row < ARRAY_SIZE; row++) begin : row_space
@@ -48,10 +51,6 @@ module systolic_array #(
             end
         end
     endgenerate
-
-    // =========================================================================
-    // SVA ASSERTIONS - Systolic Array (Q8.8 Unsigned Fixed-Point)
-    // =========================================================================
 
     // -------------------------------------------------------------------------
     // SA1. After reset, all array outputs must be zero within one cycle

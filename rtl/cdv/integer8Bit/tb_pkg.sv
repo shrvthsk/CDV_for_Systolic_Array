@@ -1,30 +1,15 @@
-// ============================================================================
-//  8-Bit Integer Systolic Array - Dynamic Coverage-Driven Testbench Package
-//
-//  HOW TO SELECT ARRAY SIZE
-//  ─────────────────────────────────────────────────────────────────────────
-//  Option A  (compile-time): Change ARRAY_SIZE below and rerun elaboration.
-//  Option B  (runtime):      Pass +N=<value> as a simulation plusarg.
-//                            Example in Vivado Tcl:
-//                              set_property -name {xsim.simulate.xsim.more_options} \
-//                                -value {-testplusarg N=4} \
-//                                -objects [get_filesets sim_1]
-//
-//  active_size is clamped to [1, ARRAY_SIZE].
-//  100% functional coverage is guaranteed via a directed stimulus phase that
-//  explicitly hits every coverage bin before constrained-random begins.
-// ============================================================================
+`timescale 1ns/1ps
+
+//==================================
+//8 Bit Integer tb_pkg.sv
+//==================================
 
 package tb_pkg;
-
-    // ── Compile-time configuration ──────────────────────────────────────────
     parameter int ARRAY_SIZE     = 8;   // DUT is compiled at this size
     parameter int MAX_ARRAY_SIZE = 32;  // Upper bound for transaction arrays
     parameter int DATA_WIDTH     = 8;
     parameter int ACC_WIDTH      = 32;
 
-    // ── Transaction stimulus class ──────────────────────────────────────────
-    // Packed arrays are MAX_ARRAY_SIZE wide; TB uses indices [0:active_size-1].
     class matrix_transaction;
         rand bit [MAX_ARRAY_SIZE-1:0][DATA_WIDTH-1:0] west_in;
         rand bit [MAX_ARRAY_SIZE-1:0][DATA_WIDTH-1:0] north_in;
@@ -52,9 +37,6 @@ package tb_pkg;
         }
     endclass
 
-    // ── Functional coverage class ───────────────────────────────────────────
-    // lanes[] is a DYNAMIC array sized to active_size in the constructor,
-    // so the TB works for any N without recompiling the package.
     class systolic_coverage;
 
         class lane_cover_container;

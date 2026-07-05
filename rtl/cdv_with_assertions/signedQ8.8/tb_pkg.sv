@@ -1,12 +1,15 @@
 `timescale 1ns/1ps
 
+//==================================
+//CDV with Assertions
+//Signed Q8.8 tb_pkg.sv
+//==================================
+
 package tb_pkg;
-    // Parameters for 16-bit Signed Q8.8 Fixed-Point Architecture
     parameter int DATA_WIDTH = 16;  // 16-bit Word Width (8-bit Int, 8-bit Fraction, signed)
     parameter int ACC_WIDTH  = 32;  // 32-bit Signed Accumulator
     parameter int ARRAY_SIZE = 8;   // 8x8 Systolic Grid Matrix Size
 
-    // Transaction Stimulus Container Class
     class matrix_transaction;
         rand bit [ARRAY_SIZE-1:0][DATA_WIDTH-1:0] west_in;
         rand bit [ARRAY_SIZE-1:0][DATA_WIDTH-1:0] north_in;
@@ -16,9 +19,6 @@ package tb_pkg;
         constraint c_enable { en dist {1 := 95, 0 := 5}; }
         constraint c_clear  { clr_acc dist {1 := 5, 0 := 95}; }
 
-        // Signed Q8.8 Corner Cases
-        // Positive range: 0x0001 to 0x7FFF (+0.004 to +127.996)
-        // Negative range: 0x8000 to 0xFFFF (-128.0  to -0.004)
         constraint corner_cases {
             foreach (west_in[i]) {
                 west_in[i] dist {
@@ -41,7 +41,6 @@ package tb_pkg;
         }
     endclass
 
-    // Flat Compiler Workaround Class for Functional Coverage Tracking
     class systolic_coverage;
 
         class lane_cover_container;

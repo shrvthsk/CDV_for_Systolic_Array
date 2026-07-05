@@ -1,10 +1,8 @@
 `timescale 1ns/1ps
-// ============================================================================
-//  Q8.8 Unsigned Fixed-Point Systolic Array - Dynamic Testbench Package
-//
-//  Runtime size: +N=<value>  |  Compile-time default: ARRAY_SIZE below
-//  100% coverage guaranteed by directed stimulus phase in top_tb.sv
-// ============================================================================
+
+//==================================
+//Unsigned Q8.8 tb_pkg.sv
+//==================================
 
 package tb_pkg;
 
@@ -13,7 +11,6 @@ package tb_pkg;
     parameter int DATA_WIDTH     = 16;  // 16-bit Q8.8 word (8-int + 8-frac)
     parameter int ACC_WIDTH      = 32;  // 32-bit Q24.8 accumulator
 
-    // ── Transaction class ────────────────────────────────────────────────────
     class matrix_transaction;
         rand bit [MAX_ARRAY_SIZE-1:0][DATA_WIDTH-1:0] west_in;
         rand bit [MAX_ARRAY_SIZE-1:0][DATA_WIDTH-1:0] north_in;
@@ -41,7 +38,6 @@ package tb_pkg;
         }
     endclass
 
-    // ── Functional coverage class ────────────────────────────────────────────
     class systolic_coverage;
 
         class lane_cover_container;

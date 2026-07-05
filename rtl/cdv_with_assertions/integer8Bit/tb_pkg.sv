@@ -1,5 +1,10 @@
 `timescale 1ns / 1ps
 
+//==================================
+//CDV with Assertions
+//8 Bit Integer tb_pkg.sv
+//==================================
+
 package tb_pkg;
     // Parameters for 8-bit Pure Integer Architecture
     parameter int DATA_WIDTH = 8;   // 8-bit Input Data Width
@@ -34,11 +39,8 @@ package tb_pkg;
         }
     endclass
 
-    // FIXED COVERAGE CONTAINER: 
-    // We use an explicit container class for the covergroup to bypass Vivado's array limitation.
     class systolic_coverage;
         
-        // 1. Declare a simple wrapper class to house the individual covergroup
         class lane_cover_container;
             covergroup lane_cg;
                 option.per_instance = 1;
@@ -60,7 +62,6 @@ package tb_pkg;
                 }
             endgroup
 
-            // Input variables used for sampling
             bit [DATA_WIDTH-1:0] w_val;
             bit [DATA_WIDTH-1:0] n_val;
             bit clr_val;
@@ -69,7 +70,6 @@ package tb_pkg;
                 lane_cg = new();
             endfunction
 
-            // Sample wrapper function
             function void sample_node(bit [DATA_WIDTH-1:0] w, bit [DATA_WIDTH-1:0] n, bit c);
                 w_val   = w;
                 n_val   = n;
@@ -78,7 +78,6 @@ package tb_pkg;
             endfunction
         endclass
 
-        // 2. Instantiate an array of these container objects instead
         lane_cover_container lanes[ARRAY_SIZE];
 
         function new();
@@ -87,7 +86,6 @@ package tb_pkg;
             end
         endfunction
 
-        // Direct explicit loop sampling trigger method
         function void sample_direct(
             bit [ARRAY_SIZE-1:0][DATA_WIDTH-1:0] w_matrix,
             bit [ARRAY_SIZE-1:0][DATA_WIDTH-1:0] n_matrix,

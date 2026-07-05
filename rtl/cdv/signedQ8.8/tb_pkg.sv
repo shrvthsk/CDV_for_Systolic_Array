@@ -1,10 +1,8 @@
 `timescale 1ns/1ps
-// ============================================================================
-//  Signed Q8.8 Fixed-Point Systolic Array - Dynamic Testbench Package
-//
-//  Runtime size: +N=<value>  |  Compile-time default: ARRAY_SIZE below
-//  Signed range: 0x0000=0, 0x7FFF=+127.996, 0x8000=-128.0, ..., 0xFFFF=-0.004
-// ============================================================================
+
+//==================================
+//Signed Q8.8 tb_pkg.sv
+//==================================
 
 package tb_pkg;
 
@@ -13,7 +11,6 @@ package tb_pkg;
     parameter int DATA_WIDTH     = 16;  // 16-bit signed Q8.8
     parameter int ACC_WIDTH      = 32;  // 32-bit signed accumulator
 
-    // ── Transaction class ────────────────────────────────────────────────────
     class matrix_transaction;
         rand bit [MAX_ARRAY_SIZE-1:0][DATA_WIDTH-1:0] west_in;
         rand bit [MAX_ARRAY_SIZE-1:0][DATA_WIDTH-1:0] north_in;
@@ -23,7 +20,6 @@ package tb_pkg;
         constraint c_enable { en      dist {1 := 95, 0 := 5};  }
         constraint c_clear  { clr_acc dist {1 := 5,  0 := 95}; }
 
-        // Signed Q8.8: positive [0x0001-0x7FFF], negative [0x8001-0xFFFF]
         constraint corner_cases {
             foreach (west_in[i]) {
                 west_in[i] dist {
@@ -46,7 +42,6 @@ package tb_pkg;
         }
     endclass
 
-    // ── Functional coverage class ────────────────────────────────────────────
     class systolic_coverage;
 
         class lane_cover_container;

@@ -1,5 +1,10 @@
 `timescale 1ns/1ps
 
+//==================================
+//CDV with Assertions
+//Unsigned Q8.8 top_tb.sv
+//==================================
+
 module top_tb;
     import tb_pkg::*;
 
@@ -19,7 +24,6 @@ module top_tb;
 
     always #10 clk = ~clk;
 
-    // Unit Under Test Instantiation
     systolic_array #(
         .DATA_WIDTH(DATA_WIDTH),
         .ACC_WIDTH(ACC_WIDTH),
@@ -95,8 +99,6 @@ module top_tb;
     end
 
     // =========================================================================
-    // TESTBENCH CONCURRENT ASSERTION
-    // =========================================================================
     // TB-A1: Scoreboard must never carry X/Z values after reset.
     // =========================================================================
     genvar sr, sc;
@@ -111,9 +113,6 @@ module top_tb;
         end
     endgenerate
 
-    // =========================================================================
-    // MAIN STIMULUS + IMMEDIATE ASSERTION CHECKER
-    // =========================================================================
     initial begin
         clk     = 0;
         rst     = 1;

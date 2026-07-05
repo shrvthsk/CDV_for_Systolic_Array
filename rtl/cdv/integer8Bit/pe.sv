@@ -1,3 +1,9 @@
+`timescale 1ns/1ps
+
+//==================================
+//8 Bit Integer pe.sv
+//==================================
+
 module pe #(
     parameter int DATA_WIDTH = 8,
     parameter int ACC_WIDTH  = 32

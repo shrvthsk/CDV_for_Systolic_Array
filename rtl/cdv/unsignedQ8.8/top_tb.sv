@@ -1,11 +1,8 @@
 `timescale 1ns/1ps
-// ============================================================================
-//  Q8.8 Unsigned Fixed-Point - Dynamic Testbench
-//
-//  Runtime size:  +N=<value>  (default = ARRAY_SIZE from package)
-//  Scoreboard:    blocking-assignment shift model (correct 1-cycle pipeline)
-//  Coverage:      directed phase → 100% bins, then constrained-random
-// ============================================================================
+
+//==================================
+//Unsigned Q8.8 top_tb.sv
+//==================================
 
 module top_tb;
     import tb_pkg::*;
@@ -15,7 +12,6 @@ module top_tb;
     bit clk, rst;
     always #10 clk = ~clk;
 
-    // ── DUT ──────────────────────────────────────────────────────────────────
     logic [ARRAY_SIZE-1:0][DATA_WIDTH-1:0] west_inputs  = '0;
     logic [ARRAY_SIZE-1:0][DATA_WIDTH-1:0] north_inputs = '0;
     logic clr_acc, en;
@@ -31,7 +27,6 @@ module top_tb;
         .array_out(array_outputs)
     );
 
-    // ── Reference scoreboard (blocking shifts - avoids read-after-write) ─────
     logic [ACC_WIDTH-1:0]  scoreboard_matrix [0:ARRAY_SIZE-1][0:ARRAY_SIZE-1];
     logic [DATA_WIDTH-1:0] west_delayed      [0:ARRAY_SIZE-1][0:ARRAY_SIZE-1];
     logic [DATA_WIDTH-1:0] north_delayed     [0:ARRAY_SIZE-1][0:ARRAY_SIZE-1];
@@ -67,7 +62,6 @@ module top_tb;
         end
     end
 
-    // ── Performance counters ─────────────────────────────────────────────────
     int total_cycles = 0, active_cycles = 0, first_valid_cycle = -1;
     bit pipeline_filled = 0;
 
@@ -82,14 +76,11 @@ module top_tb;
         end
     end
 
-    // ── TB objects ───────────────────────────────────────────────────────────
     matrix_transaction tx;
     systolic_coverage  cov;
     int match_count = 0, mismatch_count = 0;
     real cov_score;
 
-    // ── Scoreboard check ─────────────────────────────────────────────────────
-    // Gate: en=1 AND scoreboard != 0 (skips un-filled pipeline entries)
     task automatic check_sb();
         #1;
         for (int r = 0; r < active_size; r++)
@@ -105,7 +96,6 @@ module top_tb;
                 end
     endtask
 
-    // ── Directed stimulus ────────────────────────────────────────────────────
     task automatic drive_directed(
         input bit [DATA_WIDTH-1:0] w_val,
         input bit [DATA_WIDTH-1:0] n_val,
@@ -125,7 +115,6 @@ module top_tb;
         cov.sample_direct(w_tmp, n_tmp, clr);
     endtask
 
-    // ── Main ─────────────────────────────────────────────────────────────────
     localparam int MAX_RANDOM_ITER = 5000;
 
     initial begin
@@ -148,8 +137,6 @@ module top_tb;
         rst = 0;
         $display("[INIT] Reset released.");
 
-        // ══ PHASE 1: Directed coverage closure ═══════════════════════════════
-        // Bins: cp_west/cp_north {zero, max, mid} × cp_clr {cleared, accumulated}
         $display("[PHASE-1] Directed stimulus...");
         drive_directed(16'h0000, 16'h0000, 1'b1);  // zero × zero,  clr=1
         drive_directed(16'hFFFF, 16'hFFFF, 1'b0);  // max  × max,   clr=0
@@ -162,7 +149,6 @@ module top_tb;
         if (cov_score < 100.0)
             $warning("[PHASE-1] Coverage not 100%% - check bin definitions.");
 
-        // ══ PHASE 2: Constrained-random verification ══════════════════════════
         begin
             int iter = 0;
             bit [MAX_ARRAY_SIZE-1:0][DATA_WIDTH-1:0] w_tmp, n_tmp;
@@ -195,7 +181,6 @@ module top_tb;
 
         repeat (40) @(posedge clk);
 
-        // ══ Final Report ══════════════════════════════════════════════════════
         $display("\n==================================================================================");
         $display("          AMD XCRG Q8.8 FIXED-POINT VALIDATION REPORT                            ");
         $display("==================================================================================");

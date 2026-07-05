@@ -1,5 +1,10 @@
 `timescale 1ns/1ps
 
+//==================================
+//CDV with Assertions
+//Signed Q8.8 systolic_array.sv
+//==================================
+
 module systolic_array #(
     parameter int DATA_WIDTH = 16,
     parameter int ACC_WIDTH  = 32,
@@ -46,10 +51,6 @@ module systolic_array #(
             end
         end
     endgenerate
-
-    // =========================================================================
-    // SVA ASSERTIONS - Systolic Array (Signed Q8.8 Fixed-Point)
-    // =========================================================================
 
     // -------------------------------------------------------------------------
     // SA1. After reset, all array outputs must be zero within one cycle

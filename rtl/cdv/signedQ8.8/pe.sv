@@ -1,5 +1,9 @@
 `timescale 1ns/1ps
 
+//==================================
+//Signed Q8.8 pe.sv
+//==================================
+
 module pe #(
     parameter int DATA_WIDTH = 16,
     parameter int ACC_WIDTH  = 32
@@ -17,7 +21,6 @@ module pe #(
 
     logic signed [ACC_WIDTH-1:0] accum_reg;
 
-    // Horizontal and Vertical Pipeline Channels
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             east_out  <= '0;
@@ -28,12 +31,10 @@ module pe #(
         end
     end
 
-    // Signed Q8.8 x Q8.8 Multiplication
     logic signed [ACC_WIDTH-1:0] intermediate_product;
     assign intermediate_product = ACC_WIDTH'($signed(west_in))
                                  * ACC_WIDTH'($signed(north_in));
 
-    // Q16.16 to Q24.8 Realignment using ARITHMETIC right shift (>>>)
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             accum_reg <= '0;

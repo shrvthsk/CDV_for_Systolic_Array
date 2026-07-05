@@ -1,5 +1,10 @@
 `timescale 1ns/1ps
 
+//==================================
+//CDV with Assertions
+//8 Bit Integer top_tb.sv
+//==================================
+
 module top_tb;
     import tb_pkg::*;
 
@@ -38,7 +43,6 @@ module top_tb;
     matrix_transaction tx;
     systolic_coverage   cov;
 
-    // Golden scoreboard
     logic [ACC_WIDTH-1:0] scoreboard_matrix [0:ARRAY_SIZE-1][0:ARRAY_SIZE-1];
 
     logic [DATA_WIDTH-1:0] west_delayed  [0:ARRAY_SIZE-1][0:ARRAY_SIZE-1];
@@ -96,8 +100,6 @@ module top_tb;
     end
 
     // =========================================================================
-    // TESTBENCH CONCURRENT ASSERTION
-    // =========================================================================
     // TB-A1: Scoreboard must never carry X/Z values after reset.
     //        If this fires, the reference model itself has an issue.
     // =========================================================================
@@ -113,9 +115,6 @@ module top_tb;
         end
     endgenerate
 
-    // =========================================================================
-    // MAIN STIMULUS + IMMEDIATE ASSERTION CHECKER
-    // =========================================================================
     initial begin
         clk     = 0;
         rst     = 1;

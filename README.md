@@ -8,34 +8,37 @@ A SystemVerilog implementation and verification of an 8×8 MAC-based systolic ar
 
 ## Repository Structure
 
-```
+## Repository Structure
+
+```text
 .
-├── rtl/    
-|    ├── cdv/                        # Coverage-Driven Verification (no assertions)
-|    │   ├── integer8Bit/          # 8-bit unsigned integer MAC
-|    │   │   ├── pe.sv
-|    │   │   ├── systolic_array.sv
-|    │   │   ├── tb_pkg.sv
-|    │   │   └── top_tb.sv
-|    │   ├── unsignedQ8.8/                   # 16-bit unsigned Q8.8 fixed-point MAC
-|    │   │   ├── pe.sv
-|    │   │   ├── systolic_array.sv
-|    │   │   ├── tb_pkg.sv
-|    │   │   └── top_tb.sv
-|    │   └── signedQ8.8/            # 16-bit signed Q8.8 fixed-point MAC
-|    │       ├── pe.sv
-|    │       ├── systolic_array.sv
-|    │       ├── tb_pkg.sv
-|    │       └── top_tb.sv
-|    │
-|    └── cdvwithassertions/        # CDV + embedded SVA assertions
-         ├── integer8Bit/
-         ├── unsignedQ8.8/
-         └── signedQ8.8/
-             └── (same file layout as cdv/)
+└── rtl/
+    ├── cdv/                           # Coverage-Driven Verification (without assertions)
+    │   ├── integer8Bit/               # 8-bit unsigned integer implementation
+    │   ├── unsignedQ8.8/             # 16-bit unsigned Q8.8 fixed-point implementation
+    │   └── signedQ8.8/               # 16-bit signed Q8.8 fixed-point implementation
+    │       ├── pe.sv                 # Processing Element (MAC)
+    │       ├── systolic_array.sv     # Top-level systolic array
+    │       ├── tb_pkg.sv             # Testbench package
+    │       └── top_tb.sv             # Testbench
+    │
+    └── cdv_with_assertions/          # CDV with embedded SystemVerilog Assertions (SVA)
+        ├── integer8Bit/
+        ├── unsignedQ8.8/
+        └── signedQ8.8/
+            ├── pe.sv
+            ├── systolic_array.sv
+            ├── tb_pkg.sv
+            └── top_tb.sv
 ```
 
 Each subdirectory is a self-contained simulation project targeting a specific arithmetic format.
+> **Note:** Each data-format directory (`integer8Bit`, `unsignedQ8.8`, and `signedQ8.8`) contains the same set of source files:
+>
+> - `pe.sv` – Processing Element (MAC)
+> - `systolic_array.sv` – Top-level systolic array
+> - `tb_pkg.sv` – Testbench package
+> - `top_tb.sv` – SystemVerilog testbench
 
 ---
 

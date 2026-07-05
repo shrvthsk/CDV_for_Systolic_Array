@@ -1,5 +1,10 @@
 `timescale 1ns / 1ps
 
+//==================================
+//CDV with Assertions
+//8 Bit Integer systolic_array.sv
+//==================================
+
 module systolic_array #(
     parameter int DATA_WIDTH = 8,
     parameter int ACC_WIDTH  = 32,
@@ -14,11 +19,9 @@ module systolic_array #(
     output logic [ARRAY_SIZE-1:0][ARRAY_SIZE-1:0][ACC_WIDTH-1:0] array_out
 );
 
-    // Internal interconnect structural wire declarations
     wire [DATA_WIDTH-1:0] horiz_wires [0:ARRAY_SIZE-1][0:ARRAY_SIZE];
     wire [DATA_WIDTH-1:0] vert_wires  [0:ARRAY_SIZE][0:ARRAY_SIZE-1];
 
-    // Map external boundary vector buses to internal grid routing wires
     genvar i;
     generate
         for (i = 0; i < ARRAY_SIZE; i++) begin : boundary_binding
@@ -27,7 +30,6 @@ module systolic_array #(
         end
     endgenerate
 
-    // 2D Spatial Struct Generation Instantiation Block
     genvar row, col;
     generate
         for (row = 0; row < ARRAY_SIZE; row++) begin : row_space
@@ -49,10 +51,6 @@ module systolic_array #(
             end
         end
     endgenerate
-
-    // =========================================================================
-    // SVA ASSERTIONS - Systolic Array (8-Bit Integer)
-    // =========================================================================
 
     // -------------------------------------------------------------------------
     // SA1. After reset, all array outputs must be zero within one cycle.

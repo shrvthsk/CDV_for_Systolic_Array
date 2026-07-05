@@ -1,5 +1,10 @@
 `timescale 1ns / 1ps
 
+//==================================
+//CDV with Assertions
+//8 Bit Integer pe.sv
+//==================================
+
 module pe #(
     parameter int DATA_WIDTH = 8,
     parameter int ACC_WIDTH  = 32
@@ -28,7 +33,6 @@ module pe #(
         end
     end
 
-    // Multiply-Accumulate Execution Core
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             accum_reg <= '0;
@@ -42,13 +46,6 @@ module pe #(
     end
 
     assign acc_out = accum_reg;
-
-    // =========================================================================
-    // SVA ASSERTIONS - 8-Bit Integer PE
-    // NOTE: Vivado XSim requires explicit clocking event for $past()/$stable().
-    //       All $past() calls use the form: $past(expr, 1, , @(posedge clk))
-    //       All $stable() replaced with:    (x == $past(x, 1, , @(posedge clk)))
-    // =========================================================================
 
     // -------------------------------------------------------------------------
     // A1. Reset must clear pipeline registers within one cycle

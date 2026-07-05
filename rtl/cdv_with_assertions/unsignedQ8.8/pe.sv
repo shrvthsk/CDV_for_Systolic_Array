@@ -1,5 +1,10 @@
 `timescale 1ns/1ps
 
+//==================================
+//CDV with Assertions
+//Unsigned Q8.8 pe.sv
+//==================================
+
 module pe #(
     parameter int DATA_WIDTH = 16,
     parameter int ACC_WIDTH  = 32
@@ -18,7 +23,6 @@ module pe #(
     logic [ACC_WIDTH-1:0] accum_reg;
     logic [31:0] intermediate_product;
 
-    // Horizontal and Vertical Pipeline Channels
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             east_out  <= '0;
@@ -29,10 +33,8 @@ module pe #(
         end
     end
 
-    // Unsigned Product Multiplication Core (Q8.8 x Q8.8 = Q16.16 Intermediate State)
     assign intermediate_product = $unsigned(west_in * north_in);
 
-    // Q16.16 to Q24.8 Truncation/Realignment Arithmetic State Engine
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             accum_reg <= '0;
@@ -46,13 +48,6 @@ module pe #(
     end
 
     assign acc_out = accum_reg;
-
-    // =========================================================================
-    // SVA ASSERTIONS - Q8.8 Unsigned Fixed-Point PE
-    // NOTE: All $past() use explicit clocking event for Vivado XSim compatibility:
-    //       $past(expr, 1, , @(posedge clk))
-    //       $stable() replaced with (x == $past(x, 1, , @(posedge clk)))
-    // =========================================================================
 
     // -------------------------------------------------------------------------
     // A1. Reset must clear pipeline registers within one cycle
